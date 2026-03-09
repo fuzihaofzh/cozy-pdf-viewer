@@ -1,0 +1,102 @@
+{
+  "name": "cozy-pdf-viewer",
+  "displayName": "Cozy PDF Viewer",
+  "description": "A PDF viewer with built-in eye-protection color themes. Supports Solarized, Sepia, Nord, Monokai, Dracula, and custom color schemes.",
+  "version": "0.1.0",
+  "publisher": "fuzihaofzh",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fuzihaofzh/cozy-pdf-viewer"
+  },
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "keywords": [
+    "pdf",
+    "viewer",
+    "eye protection",
+    "dark mode",
+    "sepia",
+    "solarized",
+    "nord",
+    "warm colors"
+  ],
+  "activationEvents": [
+    "onCustomEditor:cozyPdfViewer.preview"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "cozyPdfViewer.preview",
+        "displayName": "Cozy PDF Viewer",
+        "selector": [
+          {
+            "filenamePattern": "*.pdf"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
+    "configuration": {
+      "title": "Cozy PDF Viewer",
+      "properties": {
+        "cozyPdfViewer.colorScheme": {
+          "markdownDescription": "Color scheme for PDF pages. Select a preset or choose `custom` to define your own colors.",
+          "type": "string",
+          "default": "disabled",
+          "enum": [
+            "disabled",
+            "solarized-light",
+            "solarized-dark",
+            "sepia",
+            "green-eye-care",
+            "nord-light",
+            "nord-dark",
+            "monokai",
+            "dracula",
+            "custom"
+          ],
+          "enumDescriptions": [
+            "Original PDF colors (no modification)",
+            "Solarized Light - warm cream background (#FDF6E3)",
+            "Solarized Dark - dark teal background (#002B36)",
+            "Sepia - classic warm paper tone (#F4ECD8)",
+            "Green Eye Care - soft green background (#C7EDCC)",
+            "Nord Light - cool arctic light (#ECEFF4)",
+            "Nord Dark - polar night (#2E3440)",
+            "Monokai - dark warm background (#272822)",
+            "Dracula - dark purple background (#282A36)",
+            "Use custom foreground/background colors defined below"
+          ]
+        },
+        "cozyPdfViewer.customColors.background": {
+          "markdownDescription": "Custom page background color (only used when color scheme is `custom`).",
+          "type": "string",
+          "default": "#FDF6E3"
+        },
+        "cozyPdfViewer.customColors.foreground": {
+          "markdownDescription": "Custom page foreground/text color (only used when color scheme is `custom`).",
+          "type": "string",
+          "default": "#000000"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.5",
+    "@types/vscode": "^1.60.0",
+    "typescript": "^5.3.0"
+  }
+}
