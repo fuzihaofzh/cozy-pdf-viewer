@@ -61,16 +61,17 @@
           <feFuncB type="linear" slope="${sB}" intercept="0"/>
         </feComponentTransfer>`
     } else {
-      // Dark mode: invert + hue-rotate(180°) + linear remap
+      // Dark mode: invert + hue-rotate(180°) + gamma remap
       // Step 1: Invert brightness
       // Step 2: Hue-rotate 180° to restore original hues (photos stay natural)
-      // Step 3: Linear remap — input 0 (was white bg) -> bg, input 1 (was black text) -> fg
-      const sR = ((fg[0] - bg[0]) / 255).toFixed(6)
-      const sG = ((fg[1] - bg[1]) / 255).toFixed(6)
-      const sB = ((fg[2] - bg[2]) / 255).toFixed(6)
-      const iR = (bg[0] / 255).toFixed(6)
-      const iG = (bg[1] / 255).toFixed(6)
-      const iB = (bg[2] / 255).toFixed(6)
+      // Step 3: Gamma remap — exact at endpoints (0->bg, 1->fg),
+      //         but gamma<1 gives midtones more dynamic range for photos
+      const aR = ((fg[0] - bg[0]) / 255).toFixed(6)
+      const aG = ((fg[1] - bg[1]) / 255).toFixed(6)
+      const aB = ((fg[2] - bg[2]) / 255).toFixed(6)
+      const oR = (bg[0] / 255).toFixed(6)
+      const oG = (bg[1] / 255).toFixed(6)
+      const oB = (bg[2] / 255).toFixed(6)
       filterContent = `
         <feComponentTransfer result="inverted">
           <feFuncR type="linear" slope="-1" intercept="1"/>
@@ -79,9 +80,9 @@
         </feComponentTransfer>
         <feColorMatrix type="hueRotate" values="180" in="inverted" result="hueFixed"/>
         <feComponentTransfer in="hueFixed">
-          <feFuncR type="linear" slope="${sR}" intercept="${iR}"/>
-          <feFuncG type="linear" slope="${sG}" intercept="${iG}"/>
-          <feFuncB type="linear" slope="${sB}" intercept="${iB}"/>
+          <feFuncR type="gamma" amplitude="${aR}" exponent="0.5" offset="${oR}"/>
+          <feFuncG type="gamma" amplitude="${aG}" exponent="0.5" offset="${oG}"/>
+          <feFuncB type="gamma" amplitude="${aB}" exponent="0.5" offset="${oB}"/>
         </feComponentTransfer>`
     }
 
