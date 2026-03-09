@@ -61,16 +61,24 @@
           <feFuncB type="linear" slope="${sB}" intercept="0"/>
         </feComponentTransfer>`
     } else {
-      // Dark mode: linear remap per channel
-      // black(0) -> fg, white(255) -> bg
-      const sR = ((bg[0] - fg[0]) / 255).toFixed(6)
-      const sG = ((bg[1] - fg[1]) / 255).toFixed(6)
-      const sB = ((bg[2] - fg[2]) / 255).toFixed(6)
-      const iR = (fg[0] / 255).toFixed(6)
-      const iG = (fg[1] / 255).toFixed(6)
-      const iB = (fg[2] / 255).toFixed(6)
+      // Dark mode: invert + hue-rotate(180°) + linear remap
+      // Step 1: Invert brightness
+      // Step 2: Hue-rotate 180° to restore original hues (photos stay natural)
+      // Step 3: Linear remap — input 0 (was white bg) -> bg, input 1 (was black text) -> fg
+      const sR = ((fg[0] - bg[0]) / 255).toFixed(6)
+      const sG = ((fg[1] - bg[1]) / 255).toFixed(6)
+      const sB = ((fg[2] - bg[2]) / 255).toFixed(6)
+      const iR = (bg[0] / 255).toFixed(6)
+      const iG = (bg[1] / 255).toFixed(6)
+      const iB = (bg[2] / 255).toFixed(6)
       filterContent = `
-        <feComponentTransfer>
+        <feComponentTransfer result="inverted">
+          <feFuncR type="linear" slope="-1" intercept="1"/>
+          <feFuncG type="linear" slope="-1" intercept="1"/>
+          <feFuncB type="linear" slope="-1" intercept="1"/>
+        </feComponentTransfer>
+        <feColorMatrix type="hueRotate" values="180" in="inverted" result="hueFixed"/>
+        <feComponentTransfer in="hueFixed">
           <feFuncR type="linear" slope="${sR}" intercept="${iR}"/>
           <feFuncG type="linear" slope="${sG}" intercept="${iG}"/>
           <feFuncB type="linear" slope="${sB}" intercept="${iB}"/>
