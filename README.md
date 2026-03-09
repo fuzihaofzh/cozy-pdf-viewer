@@ -14,17 +14,27 @@ A VS Code extension for viewing PDFs with built-in eye-protection color themes. 
 
 ## Color Schemes
 
-| Scheme | Background | Style |
-|--------|-----------|-------|
-| Solarized Light | `#FDF6E3` | Warm cream, easy on the eyes |
-| Solarized Dark | `#002B36` | Dark teal, classic dark mode |
-| Sepia | `#F4ECD8` | Old paper tone |
-| Green Eye Care | `#C7EDCC` | Soft green, minimal strain |
-| Nord Light | `#ECEFF4` | Cool arctic white |
-| Nord Dark | `#2E3440` | Polar night dark |
-| Monokai | `#272822` | Dark warm background |
-| Dracula | `#282A36` | Dark purple background |
-| Custom | User-defined | Set your own colors |
+### Light Themes
+
+| Disabled (Original) | Solarized Light | Sepia |
+|:---:|:---:|:---:|
+| ![Disabled](images/theme-disabled.png) | ![Solarized Light](images/theme-solarized-light.png) | ![Sepia](images/theme-sepia.png) |
+
+| Green Eye Care | Nord Light |
+|:---:|:---:|
+| ![Green Eye Care](images/theme-green-eye-care.png) | ![Nord Light](images/theme-nord-light.png) |
+
+### Dark Themes
+
+| Solarized Dark | Nord Dark |
+|:---:|:---:|
+| ![Solarized Dark](images/theme-solarized-dark.png) | ![Nord Dark](images/theme-nord-dark.png) |
+
+| Monokai | Dracula |
+|:---:|:---:|
+| ![Monokai](images/theme-monokai.png) | ![Dracula](images/theme-dracula.png) |
+
+You can also set `colorScheme` to `custom` and define your own foreground/background colors.
 
 ## Installation
 
