@@ -61,17 +61,26 @@
           <feFuncB type="linear" slope="${sB}" intercept="0"/>
         </feComponentTransfer>`
     } else {
-      // Dark mode: invert + hue-rotate(180°) + gamma remap
-      // Step 1: Invert brightness
-      // Step 2: Hue-rotate 180° to restore original hues (photos stay natural)
-      // Step 3: Gamma remap — exact at endpoints (0->bg, 1->fg),
-      //         but gamma<1 gives midtones more dynamic range for photos
-      const aR = ((fg[0] - bg[0]) / 255).toFixed(6)
-      const aG = ((fg[1] - bg[1]) / 255).toFixed(6)
-      const aB = ((fg[2] - bg[2]) / 255).toFixed(6)
-      const oR = (bg[0] / 255).toFixed(6)
-      const oG = (bg[1] / 255).toFixed(6)
-      const oB = (bg[2] / 255).toFixed(6)
+      // Dark mode: invert + hue-rotate (natural photo colors)
+      // then selective table remap (only adjust near-black/white to bg/fg)
+      // After invert+hue-rotate: white bg→0 (black), black text→1 (white)
+      // Table: near 0 → bg color, near 1 → fg color, middle → identity
+      var thr = 0.2
+      var steps = 21
+      function buildTable(fgVal, bgVal) {
+        var vals = []
+        for (var i = 0; i < steps; i++) {
+          var x = i / (steps - 1)
+          var sBlack = Math.max(0, 1 - x / thr)
+          var sWhite = Math.max(0, (x - (1 - thr)) / thr)
+          var out = x * (1 - sBlack - sWhite) + sBlack * bgVal + sWhite * fgVal
+          vals.push(Math.min(1, Math.max(0, out)).toFixed(4))
+        }
+        return vals.join(' ')
+      }
+      var tR = buildTable(fg[0]/255, bg[0]/255)
+      var tG = buildTable(fg[1]/255, bg[1]/255)
+      var tB = buildTable(fg[2]/255, bg[2]/255)
       filterContent = `
         <feComponentTransfer result="inverted">
           <feFuncR type="linear" slope="-1" intercept="1"/>
@@ -80,9 +89,9 @@
         </feComponentTransfer>
         <feColorMatrix type="hueRotate" values="180" in="inverted" result="hueFixed"/>
         <feComponentTransfer in="hueFixed">
-          <feFuncR type="gamma" amplitude="${aR}" exponent="0.5" offset="${oR}"/>
-          <feFuncG type="gamma" amplitude="${aG}" exponent="0.5" offset="${oG}"/>
-          <feFuncB type="gamma" amplitude="${aB}" exponent="0.5" offset="${oB}"/>
+          <feFuncR type="table" tableValues="${tR}"/>
+          <feFuncG type="table" tableValues="${tG}"/>
+          <feFuncB type="table" tableValues="${tB}"/>
         </feComponentTransfer>`
     }
 
